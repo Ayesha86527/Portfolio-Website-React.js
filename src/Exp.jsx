@@ -24,12 +24,6 @@ const ExperienceSection = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = canvas.offsetHeight;
-      initNetwork();
-    };
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
       canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
       initNetwork();
     };
@@ -321,3 +315,4 @@ const ExperienceSection = () => {
 
 
 export default ExperienceSection;
+

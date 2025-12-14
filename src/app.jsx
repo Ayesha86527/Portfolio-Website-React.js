@@ -1,4 +1,4 @@
-import Hero from './hero.jsx'
+import Hero from './Hero.jsx'
 import About from './About.jsx'
 import Experience from './Exp.jsx'
 import Projects from './Projects.jsx'
@@ -26,3 +26,4 @@ export default function App() {
   )
 
 }
+

@@ -34,7 +34,7 @@ const AboutSection = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
       initNetwork();
     };
 
@@ -283,5 +283,6 @@ const AboutSection = () => {
     </div>
   );
 };
+
 
 export default AboutSection;

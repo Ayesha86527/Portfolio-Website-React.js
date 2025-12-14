@@ -13,7 +13,7 @@ const ExperienceSection = () => {
     return () => document.head.removeChild(link);
   }, []);
 
-  // Canvas background animation (matching hero)
+  // Canvas background animation
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -98,9 +98,14 @@ const ExperienceSection = () => {
     const initNetwork = () => {
       particles = [];
       nodes = [];
-      for (let i = 0; i < 50; i++) particles.push(new Particle());
-      const cols = 6;
-      const rows = 4;
+      
+      // Reduce particle count on mobile
+      const particleCount = window.innerWidth < 768 ? 25 : 50;
+      for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+      
+      // Reduce node count on mobile
+      const cols = window.innerWidth < 768 ? 3 : 6;
+      const rows = window.innerWidth < 768 ? 2 : 4;
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
           const x = (canvas.width / (cols + 1)) * (i + 1) + (Math.random() - 0.5) * 80;
@@ -179,48 +184,51 @@ const ExperienceSection = () => {
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-[#0a0a19] overflow-hidden py-20 px-6">
+    <div className="relative w-full min-h-screen bg-[#0a0a19] overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6">
       {/* Animated background canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       
       {/* Gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-green-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-cyan-500/10 rounded-full blur-3xl" />
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Section title */}
-        <div className="text-center mb-16">
-          <h2 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-green-400 bg-clip-text text-transparent mb-4 tracking-tight" style={{fontFamily: 'Orbitron, sans-serif', letterSpacing: '0.05em'}}>
+        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-green-400 bg-clip-text text-transparent mb-3 sm:mb-4 tracking-tight" style={{fontFamily: 'Orbitron, sans-serif', letterSpacing: '0.05em'}}>
             EXPERIENCE
           </h2>
-          <div className="h-1 w-32 mx-auto bg-gradient-to-r from-cyan-500 via-purple-500 to-green-500 rounded-full" />
+          <div className="h-1 w-24 sm:w-32 mx-auto bg-gradient-to-r from-cyan-500 via-purple-500 to-green-500 rounded-full" />
         </div>
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-gradient-to-b from-cyan-500 via-purple-500 to-green-500 opacity-30" />
+          {/* Vertical line - hidden on mobile, shown on desktop */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-cyan-500 via-purple-500 to-green-500 opacity-30" />
 
           {/* Experience cards */}
-          <div className="space-y-12">
+          <div className="space-y-8 sm:space-y-10 md:space-y-12">
             {experiences.map((exp, index) => (
               <div
                 key={index}
-                className={`relative ${index % 2 === 0 ? 'md:ml-0 md:mr-auto md:pr-12' : 'md:ml-auto md:pl-12'} md:w-1/2 w-full`}
+                className={`relative md:w-1/2 w-full ${index % 2 === 0 ? 'md:ml-0 md:mr-auto md:pr-8 lg:pr-12' : 'md:ml-auto md:pl-8 lg:pl-12'}`}
                 onMouseEnter={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
+                onTouchStart={() => setHoveredCard(index)}
+                onTouchEnd={() => setHoveredCard(null)}
               >
-                {/* Timeline dot */}
+                {/* Timeline dot - only visible on desktop */}
                 <div 
-                  className="absolute left-0 md:left-auto md:right-0 top-8 transform md:translate-x-1/2 w-6 h-6 rounded-full border-4 border-[#0a0a19] z-20 transition-all duration-300"
+                  className="hidden md:block absolute top-8 w-5 h-5 sm:w-6 sm:h-6 rounded-full border-4 border-[#0a0a19] z-20 transition-all duration-300"
                   style={{
                     backgroundColor: exp.color,
                     boxShadow: hoveredCard === index ? `0 0 20px ${exp.color}` : `0 0 10px ${exp.color}66`,
-                    left: index % 2 === 0 ? 'auto' : '0',
+                    left: index % 2 === 0 ? 'auto' : 'auto',
                     right: index % 2 === 0 ? '-3px' : 'auto',
-                    transform: index % 2 === 0 ? 'translateX(50%)' : 'translateX(-50%)'
+                    transform: index % 2 === 0 ? 'translateX(50%)' : 'translateX(-50%)',
+                    [index % 2 === 0 ? 'right' : 'left']: '-3px'
                   }}
                 >
                   <div 
@@ -231,17 +239,17 @@ const ExperienceSection = () => {
 
                 {/* Experience card */}
                 <div 
-                  className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 ml-12 md:ml-0 transition-all duration-300 hover:bg-white/10"
+                  className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 transition-all duration-300 hover:bg-white/10"
                   style={{
                     borderColor: hoveredCard === index ? exp.color + '66' : 'rgba(255,255,255,0.1)',
                     boxShadow: hoveredCard === index ? `0 0 30px ${exp.color}33` : 'none'
                   }}
                 >
                   {/* Header */}
-                  <div className="mb-6">
-                    <div className="flex items-start justify-between mb-3">
+                  <div className="mb-4 sm:mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-3">
                       <h3 
-                        className="text-2xl md:text-3xl font-bold tracking-wide"
+                        className="text-xl sm:text-2xl md:text-3xl font-bold tracking-wide"
                         style={{
                           fontFamily: 'Orbitron, sans-serif',
                           color: exp.color,
@@ -251,7 +259,7 @@ const ExperienceSection = () => {
                         {exp.title}
                       </h3>
                       <span 
-                        className="px-3 py-1 text-xs rounded-full backdrop-blur-xl border tracking-wider"
+                        className="px-2.5 sm:px-3 py-1 text-xs rounded-full backdrop-blur-xl border tracking-wider self-start"
                         style={{
                           fontFamily: 'Rajdhani, sans-serif',
                           backgroundColor: exp.color + '22',
@@ -263,41 +271,41 @@ const ExperienceSection = () => {
                       </span>
                     </div>
                     
-                    <div className="flex flex-col gap-2 text-gray-400" style={{fontFamily: 'Rajdhani, sans-serif'}}>
+                    <div className="flex flex-col gap-1.5 sm:gap-2 text-gray-400 text-sm sm:text-base" style={{fontFamily: 'Rajdhani, sans-serif'}}>
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
                           <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
                         </svg>
                         <span className="font-semibold text-gray-300">{exp.company}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                         </svg>
-                        <span>{exp.duration}</span>
+                        <span className="text-xs sm:text-sm">{exp.duration}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                         </svg>
-                        <span>{exp.location}</span>
+                        <span className="text-xs sm:text-sm">{exp.location}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Achievements */}
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {exp.achievements.map((achievement, idx) => (
-                      <div key={idx} className="flex items-start gap-3 group">
+                      <div key={idx} className="flex items-start gap-2 sm:gap-3 group">
                         <div 
-                          className="mt-1.5 w-2 h-2 rounded-full flex-shrink-0 transition-all duration-300"
+                          className="mt-1.5 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full flex-shrink-0 transition-all duration-300"
                           style={{
                             backgroundColor: exp.color,
                             boxShadow: `0 0 8px ${exp.color}`
                           }}
                         />
-                        <p className="text-gray-300 leading-relaxed text-sm md:text-base" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                        <p className="text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
                           {achievement}
                         </p>
                       </div>
@@ -313,6 +321,6 @@ const ExperienceSection = () => {
   );
 };
 
-
 export default ExperienceSection;
+
 

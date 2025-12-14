@@ -28,6 +28,12 @@ const ExperienceSection = () => {
       initNetwork();
     };
 
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
+      initNetwork();
+    };
+
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
@@ -312,5 +318,6 @@ const ExperienceSection = () => {
     </div>
   );
 };
+
 
 export default ExperienceSection;

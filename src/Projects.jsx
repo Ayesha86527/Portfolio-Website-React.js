@@ -24,7 +24,7 @@ const ProjectsSection = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
       initNetwork();
     };
 
@@ -358,5 +358,6 @@ const ProjectsSection = () => {
     </div>
   );
 };
+
 
 export default ProjectsSection;

@@ -2,7 +2,7 @@ import Hero from './Hero.jsx'
 import About from './About.jsx'
 import Experience from './Exp.jsx'
 import Projects from './Projects.jsx'
-import Contact from './contact.jsx'
+import Contact from './Contact.jsx'
 
 export default function App() {
   return (
@@ -26,4 +26,5 @@ export default function App() {
   )
 
 }
+
 

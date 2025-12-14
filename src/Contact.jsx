@@ -32,10 +32,10 @@ const ContactSection = () => {
     let particles = [];
     let nodes = [];
     let time = 0;
-
+    
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight; 
       initNetwork();
     };
 
@@ -472,5 +472,6 @@ const ContactSection = () => {
     </div>
   );
 };
+
 
 export default ContactSection;

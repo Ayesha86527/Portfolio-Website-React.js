@@ -34,7 +34,7 @@ const AIPortfolioHero = () => {
 
     const resize = () => {
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
       initNetwork();
     };
 
@@ -250,5 +250,6 @@ const AIPortfolioHero = () => {
     </div>
   );
 };
+
 
 export default AIPortfolioHero;

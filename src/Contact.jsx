@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import emailjs from '@emailjs/browser';
 
 const ContactSection = () => {
-  const canvasRef = useRef(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,7 +11,7 @@ const ContactSection = () => {
   const [formStatus, setFormStatus] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  // EmailJS Configuration - REPLACE THESE WITH YOUR ACTUAL IDs
+  // EmailJS Configuration
   const EMAILJS_SERVICE_ID = 'service_infm3ox';
   const EMAILJS_TEMPLATE_ID = 'template_civ3dq4';
   const EMAILJS_PUBLIC_KEY = 'n2MNE7FslZHWpYsil';
@@ -23,147 +22,6 @@ const ContactSection = () => {
     link.rel = 'stylesheet';
     document.head.appendChild(link);
     return () => document.head.removeChild(link);
-  }, []);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationFrameId;
-    let particles = [];
-    let nodes = [];
-    let time = 0;
-    
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight; 
-      initNetwork();
-    };
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3;
-        this.size = Math.random() * 1.5 + 0.5;
-        this.opacity = Math.random() * 0.3 + 0.1;
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(100, 200, 255, ${this.opacity})`;
-        ctx.fill();
-      }
-    }
-
-    class Node {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.baseX = x;
-        this.baseY = y;
-        this.vx = (Math.random() - 0.5) * 0.2;
-        this.vy = (Math.random() - 0.5) * 0.2;
-        this.size = Math.random() * 3 + 2;
-        this.pulsePhase = Math.random() * Math.PI * 2;
-        this.color = ['#00d9ff', '#a855f7', '#10b981'][Math.floor(Math.random() * 3)];
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        const dx = this.baseX - this.x;
-        const dy = this.baseY - this.y;
-        this.x += dx * 0.01;
-        this.y += dy * 0.01;
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-
-      draw(time) {
-        const pulse = Math.sin(time * 0.002 + this.pulsePhase) * 0.5 + 0.5;
-        const glowSize = this.size + pulse * 6;
-        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowSize);
-        gradient.addColorStop(0, this.color + 'ff');
-        gradient.addColorStop(0.5, this.color + '66');
-        gradient.addColorStop(1, this.color + '00');
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-    }
-
-    const initNetwork = () => {
-      particles = [];
-      nodes = [];
-      
-      // Adjust particle count based on screen size
-      const particleCount = window.innerWidth < 768 ? 30 : 50;
-      for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-      
-      // Adjust grid based on screen size
-      const cols = window.innerWidth < 768 ? 3 : 6;
-      const rows = window.innerWidth < 768 ? 3 : 4;
-      
-      for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-          const x = (canvas.width / (cols + 1)) * (i + 1) + (Math.random() - 0.5) * 80;
-          const y = (canvas.height / (rows + 1)) * (j + 1) + (Math.random() - 0.5) * 80;
-          nodes.push(new Node(x, y));
-        }
-      }
-    };
-
-    const drawConnections = () => {
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 150) {
-            const opacity = (1 - dist / 150) * 0.2;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.strokeStyle = `rgba(100, 200, 255, ${opacity})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
-      }
-    };
-
-    const animate = () => {
-      time += 16;
-      ctx.fillStyle = 'rgba(10, 10, 25, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      drawConnections();
-      nodes.forEach(n => { n.update(); n.draw(time); });
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    animate();
-
-    return () => {
-      window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationFrameId);
-    };
   }, []);
 
   const handleInputChange = (e) => {
@@ -192,7 +50,7 @@ const ContactSection = () => {
           from_email: formData.email,
           subject: formData.subject,
           message: formData.message,
-          to_name: 'Ayesha', // Your name
+          to_name: 'Ayesha',
         },
         EMAILJS_PUBLIC_KEY
       );
@@ -201,14 +59,12 @@ const ContactSection = () => {
       setFormStatus('success');
       setFormData({ name: '', email: '', subject: '', message: '' });
       
-      // Reset status after 3 seconds
       setTimeout(() => setFormStatus(null), 3000);
     } catch (error) {
       console.error('Email send failed:', error);
       setFormStatus('error');
       alert('Failed to send message. Please try again or contact me directly at ayeshanoman490@gmail.com');
       
-      // Reset status after 3 seconds
       setTimeout(() => setFormStatus(null), 3000);
     }
   };
@@ -252,8 +108,7 @@ const ContactSection = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-[#0a0a19] overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6">
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      
+      {/* Static gradient overlays - No canvas animation */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
       <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-purple-500/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl" />
@@ -493,4 +348,5 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+
 

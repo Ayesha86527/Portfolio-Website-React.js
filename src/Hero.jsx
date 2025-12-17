@@ -4,6 +4,7 @@ const AIPortfolioHero = () => {
   const canvasRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   // Detect mobile device
   useEffect(() => {
@@ -35,18 +36,32 @@ const AIPortfolioHero = () => {
     }
   };
 
+  // Canvas animation with better initialization
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let animationFrameId;
     let particles = [];
     let nodes = [];
     let time = 0;
+    let isAnimating = false;
 
     const resize = () => {
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      
+      // Force canvas dimensions
       canvas.width = window.innerWidth;
-      canvas.height = canvas.parentElement.offsetHeight || window.innerHeight;  
+      canvas.height = window.innerHeight;
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      
       initNetwork();
+      setCanvasReady(true);
     };
 
     class Particle {
@@ -87,7 +102,7 @@ const AIPortfolioHero = () => {
         this.color = ['#00d9ff', '#a855f7', '#10b981'][Math.floor(Math.random() * 3)];
       }
 
-      update(time) {
+      update() {
         this.x += this.vx;
         this.y += this.vy;
         const dx = this.baseX - this.x;
@@ -158,22 +173,35 @@ const AIPortfolioHero = () => {
     };
 
     const animate = () => {
+      if (!isAnimating) return;
+      
       time += 16;
       ctx.fillStyle = 'rgba(10, 10, 25, 0.1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
       particles.forEach(p => { p.update(); p.draw(); });
       drawConnections();
-      nodes.forEach(n => { n.update(time); n.draw(time); });
+      nodes.forEach(n => { n.update(); n.draw(time); });
+      
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    resize();
+    // Initialize with a small delay to ensure DOM is ready
+    const initTimeout = setTimeout(() => {
+      resize();
+      isAnimating = true;
+      animate();
+    }, 100);
+
     window.addEventListener('resize', resize);
-    animate();
 
     return () => {
+      clearTimeout(initTimeout);
+      isAnimating = false;
       window.removeEventListener('resize', resize);
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, []);
 
@@ -183,14 +211,23 @@ const AIPortfolioHero = () => {
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#0a0a19]" onMouseMove={handleMouseMove}>
+      {/* Canvas with explicit styling */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 0
+        }}
       />
       
       {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" style={{zIndex: 1}} />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent pointer-events-none" style={{zIndex: 1}} />
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 sm:px-6 text-center">
@@ -247,10 +284,11 @@ const AIPortfolioHero = () => {
       </div>
       
       {/* Corner accents - Smaller on mobile */}
-      <div className="absolute top-0 left-0 w-32 h-32 sm:w-64 sm:h-64 bg-purple-500/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 w-32 h-32 sm:w-64 sm:h-64 bg-purple-500/10 rounded-full blur-3xl" style={{zIndex: 1}} />
+      <div className="absolute bottom-0 right-0 w-48 h-48 sm:w-96 sm:h-96 bg-cyan-500/10 rounded-full blur-3xl" style={{zIndex: 1}} />
     </div>
   );
 };
 
 export default AIPortfolioHero;
+

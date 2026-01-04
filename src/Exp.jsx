@@ -42,7 +42,7 @@ const ExperienceSection = () => {
   ];
 
   return (
-    <div className="relative w-full min-h-screen bg-[#0a0a19] overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6">
+    <div className="relative w-full min-h-screen bg-[#0a0a19] overflow-hidden py-12 sm:py-16 md:py-20 px-4 sm:px-6" style={{ transform: 'translateZ(0)' }}>
       {/* Static gradient overlays - No canvas animation */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
       <div className="absolute top-0 right-0 w-48 h-48 sm:w-64 sm:h-64 md:w-96 md:h-96 bg-green-500/10 rounded-full blur-3xl" />
@@ -92,12 +92,14 @@ const ExperienceSection = () => {
                   />
                 </div>
 
-                {/* Experience card */}
+                {/* Experience card - OPTIMIZED: Reduced blur + GPU acceleration */}
                 <div 
-                  className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 transition-all duration-300 hover:bg-white/10"
+                  className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 transition-all duration-300 hover:bg-white/10"
                   style={{
                     borderColor: hoveredCard === index ? exp.color + '66' : 'rgba(255,255,255,0.1)',
-                    boxShadow: hoveredCard === index ? `0 0 30px ${exp.color}33` : 'none'
+                    boxShadow: hoveredCard === index ? `0 0 30px ${exp.color}33` : 'none',
+                    transform: 'translateZ(0)',
+                    willChange: 'transform'
                   }}
                 >
                   {/* Header */}
@@ -114,7 +116,7 @@ const ExperienceSection = () => {
                         {exp.title}
                       </h3>
                       <span 
-                        className="px-2.5 sm:px-3 py-1 text-xs rounded-full backdrop-blur-xl border tracking-wider self-start"
+                        className="px-2.5 sm:px-3 py-1 text-xs rounded-full backdrop-blur-sm border tracking-wider self-start"
                         style={{
                           fontFamily: 'Rajdhani, sans-serif',
                           backgroundColor: exp.color + '22',
@@ -177,5 +179,3 @@ const ExperienceSection = () => {
 };
 
 export default ExperienceSection;
-
-

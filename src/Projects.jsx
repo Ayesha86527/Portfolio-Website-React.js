@@ -98,7 +98,7 @@ const ProjectsSection = () => {
             >
               {/* Project Card */}
               <div 
-                className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 hover:bg-white/10 h-full flex flex-col"
+                className="bg-gray-900/80 border border-white/10 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-500 hover:bg-gray-900/90 h-full flex flex-col"
                 style={{
                   borderColor: hoveredProject === index ? project.color + '66' : 'rgba(255,255,255,0.1)',
                   boxShadow: hoveredProject === index ? `0 0 40px ${project.color}33` : 'none',
@@ -133,7 +133,7 @@ const ProjectsSection = () => {
                   
                   {/* Status Badge */}
                   {project.status && (
-                    <div className="absolute top-3 sm:top-4 right-3 sm:right-4 px-2 sm:px-3 py-1 text-xs rounded-full backdrop-blur-xl border tracking-wider"
+                    <div className="absolute top-3 sm:top-4 right-3 sm:right-4 px-2 sm:px-3 py-1 text-xs rounded-full bg-gray-900/90 border tracking-wider"
                       style={{
                         fontFamily: 'Rajdhani, sans-serif',
                         backgroundColor: project.color + '33',
@@ -146,7 +146,7 @@ const ProjectsSection = () => {
                   )}
 
                   {/* Category Badge */}
-                  <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 px-2 sm:px-3 py-1 text-xs rounded-full backdrop-blur-xl bg-black/50 border border-white/20 text-white tracking-wider"
+                  <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 px-2 sm:px-3 py-1 text-xs rounded-full bg-gray-900/90 border border-white/20 text-white tracking-wider"
                     style={{fontFamily: 'Rajdhani, sans-serif'}}
                   >
                     {project.category.toUpperCase()}
@@ -222,3 +222,4 @@ const ProjectsSection = () => {
 };
 
 export default ProjectsSection;
+

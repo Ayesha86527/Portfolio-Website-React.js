@@ -132,7 +132,7 @@ const ContactSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           
           {/* Contact Form */}
-          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8">
+          <div className="bg-gray-900/80 border border-white/10 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8">
             <h3 
               className="text-xl sm:text-2xl font-bold text-cyan-400 mb-5 sm:mb-6 tracking-wide" 
               style={{fontFamily: 'Orbitron, sans-serif', letterSpacing: '0.05em'}}
@@ -257,7 +257,7 @@ const ContactSection = () => {
                     href={info.link}
                     target={info.link.startsWith('http') ? '_blank' : '_self'}
                     rel="noopener noreferrer"
-                    className="block backdrop-blur-xl bg-white/5 border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300 hover:bg-white/10 active:scale-95"
+                    className="block bg-gray-900/80 border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300 hover:bg-gray-900/90 active:scale-95"
                     style={{
                       borderColor: hoveredCard === index ? info.color + '66' : 'rgba(255,255,255,0.1)',
                       boxShadow: hoveredCard === index ? `0 0 30px ${info.color}33` : 'none',
@@ -305,7 +305,7 @@ const ContactSection = () => {
                   </a>
                 ) : (
                   <div
-                    className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300"
+                    className="bg-gray-900/80 border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-6 transition-all duration-300"
                     style={{
                       borderColor: hoveredCard === index ? info.color + '66' : 'rgba(255,255,255,0.1)',
                       boxShadow: hoveredCard === index ? `0 0 30px ${info.color}33` : 'none'
@@ -348,5 +348,6 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+
 
 
